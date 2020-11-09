@@ -1,0 +1,42 @@
+{
+    "pluginAlias": "RGB-Light",
+    "pluginType": "accessory",
+    "singular": false,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "title": "Name",
+                "type": "string",
+                "required": true,
+                "default": "Light"
+            },
+            "infoUrl": {
+                "title": "Info Endpoint",
+                "type": "string",
+                "required": true,
+                "description": "Url of the info endpoint of the device",
+                "default": "http://localhost:8080/api/v1/lights/<device_id>"
+            },
+            "switchUrl": {
+                "title": "Switch Endpoint",
+                "type": "string",
+                "required": true,
+                "description": "Url of the switch endpoint of the device",
+                "default": "http://localhost:8080/api/v1/lights/switch/<device_id>"
+            },
+            "brightnessUrl": {
+                "title": "Brightness Endpoint",
+                "type": "string",
+                "description": "Url of the brightness endpoint of the device",
+                "default": "http://localhost:8080/api/v1/lights/brightness/<device_id>"
+            },
+            "colourUrl": {
+                "title": "Colour Endpoint",
+                "type": "string",
+                "description": "Url of the colour endpoint of the device",
+                "default": "http://localhost:8080/api/v1/lights/colour/<device_id>"
+            }
+        }
+    }
+}
