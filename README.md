@@ -8,25 +8,25 @@ Should return a json object with the following fields (note if not using the bri
 ``` json
 {
     "light": {
-        "switch": 0 or 1,
-        "brightness": number between 0 and 1,
+        "state": boolean,
+        "brightness": number between 0 and 100,
         "hsv": { "h": number, "s": number, "v": number (not used)}
     }
 }
 ```
 
-### Switch (PUT) *Required*
+### State (PUT) *Required*
 Should expect a json body containing:
 ``` json
 {
-    "switch": 0 or 1
+    "state": boolean
 }
 ```
 ### Brightness (PUT) *Optional*
 Should expect a json body containing:
 ``` json
 {
-    "brightness": number between 0 and 1,
+    "brightness": number between 0 - 100,
 }
 ```
 ### Colour (PUT) *Optional*

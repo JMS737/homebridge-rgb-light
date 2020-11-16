@@ -27,7 +27,7 @@ class RgbLight implements AccessoryPlugin {
   private readonly log: Logging;
   private readonly name: string;
   private readonly infoUrl: string;
-  private readonly switchUrl: string;
+  private readonly stateUrl: string;
   private readonly brightnessUrl: string;
   private readonly colourUrl: string;
 
@@ -47,7 +47,7 @@ class RgbLight implements AccessoryPlugin {
     this.saturation = 0;
 
     this.infoUrl = config.infoUrl;
-    this.switchUrl = config.switchUrl;
+    this.stateUrl = config.stateUrl;
     this.brightnessUrl = config.brightnessUrl;
     this.colourUrl = config.colourUrl;
 
@@ -75,16 +75,14 @@ class RgbLight implements AccessoryPlugin {
     this.informationService = new hap.Service.AccessoryInformation()
       .setCharacteristic(hap.Characteristic.Manufacturer, "777 Productions")
       .setCharacteristic(hap.Characteristic.Model, "Raspberry Pi - RGB LED Strip");
-
-    log.info("Switch finished initializing!");
   }
 
   handleOnGet(callback: CharacteristicGetCallback): void {
     Axios.get(this.infoUrl)
       .then((response) => {
-        let deviceInfo = response.data.light;
-        let state = deviceInfo.switch == 1;
-        this.log.info("Current state of the switch was returned: " + (state ? "ON" : "OFF"));
+        let deviceInfo = response.data.device;
+        let state = deviceInfo.state;
+        this.log.debug("Current state of the light was returned: " + (state ? "ON" : "OFF"));
         callback(undefined, state);
       })
       .catch((error) => {
@@ -94,11 +92,11 @@ class RgbLight implements AccessoryPlugin {
   }
 
   handleOnSet(value: CharacteristicValue, callback: CharacteristicSetCallback): void {
-    Axios.put(this.switchUrl, {
-      switch: (value as boolean) ? 1 : 0
+    Axios.put(this.stateUrl, {
+      state: value
     })
       .then((response) => {
-        this.log.info(`Light state was set to: ${value as boolean ? "ON" : "OFF"}`);
+        this.log.debug(`Light state was set to: ${value as boolean ? "ON" : "OFF"}`);
         callback();
       })
       .catch((error) => {
@@ -110,9 +108,9 @@ class RgbLight implements AccessoryPlugin {
   handleBrightnessGet(callback: CharacteristicGetCallback): void {
     Axios.get(this.infoUrl)
       .then((response) => {
-        let deviceInfo = response.data.light;
-        this.brightness = deviceInfo.brightness * 100;
-        this.log.info(`Current brightness returned: ${this.brightness}%`);
+        let deviceInfo = response.data.device;
+        this.brightness = deviceInfo.brightness;
+        this.log.debug(`Current brightness returned: ${this.brightness}%`);
         callback(undefined, this.brightness);
       })
       .catch((error) => {
@@ -122,9 +120,9 @@ class RgbLight implements AccessoryPlugin {
   }
 
   handleBrightnessSet(value: CharacteristicValue, callback: CharacteristicSetCallback): void {
-    Axios.put(this.brightnessUrl, { brightness: (value as number) / 100 })
+    Axios.put(this.brightnessUrl, { brightness: (value as number) })
       .then((response) => {
-        this.log.info(`Light brighness was set to: ${value as number}`);
+        this.log.debug(`Light brighness was set to: ${value as number}`);
         callback();
       })
       .catch((error) => {
@@ -135,12 +133,12 @@ class RgbLight implements AccessoryPlugin {
   handleHueGet(callback: CharacteristicGetCallback): void {
     Axios.get(this.infoUrl)
       .then((response) => {
-        let deviceInfo = response.data.light;
+        let deviceInfo = response.data.device;
         let hsv = deviceInfo.hsv;
         this.hue = hsv.h;
         this.saturation = hsv.s;
 
-        this.log.info(`Current HSV: ${this.hue}, ${this.saturation}`);
+        this.log.debug(`Current HSV: ${this.hue}, ${this.saturation}`);
         callback(undefined, this.hue);
       })
       .catch((error) => {
@@ -155,7 +153,7 @@ class RgbLight implements AccessoryPlugin {
 
     Axios.put(this.colourUrl, { hsv: hsv })
       .then((response) => {
-        this.log.info(`Light colour was set to: ${hsv}`);
+        this.log.debug(`Light colour was set to: ${hsv}`);
         callback();
       })
       .catch((error) => {
@@ -166,12 +164,12 @@ class RgbLight implements AccessoryPlugin {
   handleSaturationGet(callback: CharacteristicGetCallback): void {
     Axios.get(this.infoUrl)
       .then((response) => {
-        let deviceInfo = response.data.light;
+        let deviceInfo = response.data.device;
         let hsv = deviceInfo.hsv;
         this.hue = hsv.h;
         this.saturation = hsv.s;
 
-        this.log.info(`Current HSV: ${this.hue}, ${this.saturation}`);
+        this.log.debug(`Current HSV: ${this.hue}, ${this.saturation}`);
         callback(undefined, this.saturation);
       })
       .catch((error) => {
@@ -186,7 +184,7 @@ class RgbLight implements AccessoryPlugin {
     
     Axios.put(this.colourUrl, { hsv: hsv })
       .then((response) => {
-        this.log.info(`Light colour was set to: ${hsv}`);
+        this.log.debug(`Light colour was set to: ${hsv}`);
         callback();
       })
       .catch((error) => {
@@ -198,9 +196,9 @@ class RgbLight implements AccessoryPlugin {
    * This method is optional to implement. It is called when HomeKit ask to identify the accessory.
    * Typical this only ever happens at the pairing process.
    */
-  identify(): void {
-    this.log("Identify!");
-  }
+  // identify(): void {
+  //   this.log("Identify!");
+  // }
 
   /*
    * This method is called directly after creation of this instance.

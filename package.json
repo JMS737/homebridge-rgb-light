@@ -1,7 +1,7 @@
 {
   "name": "@jms777/homebridge-rgb-light",
   "displayName": "DIY Light",
-  "version": "1.0.1",
+  "version": "2.0.2",
   "description": "A homebridge plugin designed to work with a light exposed via an API (see README.md for more details)",
   "main": "dist/accessory.js",
   "scripts": {
@@ -20,7 +20,6 @@
   ],
   "license": "ISC",
   "files": [
-    "LICENSE",
     "dist",
     "config.schema.json"
   ],
