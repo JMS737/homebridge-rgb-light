@@ -7,7 +7,7 @@ A basic homebridge plugin used to integrate with a light exposed by an API with 
 Should return a json object with the following fields (note if not using the brightness or colour endpoints these can be ommitted):
 ``` json
 {
-    "light": {
+    "device": {
         "state": boolean,
         "brightness": number between 0 and 100,
         "hsv": { "h": number, "s": number, "v": number (not used)}
